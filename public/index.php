@@ -17,16 +17,18 @@ date_default_timezone_set('UTC');
 require '../models/cat.php';
 
 $app = new \Slim\Slim();
+$view = $app->view();
+$view->setTemplatesDirectory('../views');
 
-$app->get('/', function() {
-	echo "Lovely cat website";
+$app->get('/', function() use($app) {
+	$cats = new \Cat();
+	$app->render('index.php', array("cats" => $cats->all() ));
 });
 
 $app->get('/new/:url', function($url) {
 	$cat = new \Cat();
 	$cat->url = $url;
 	$cat->save();
-	echo $cat->toJson();
 });
 
 $app->run();
